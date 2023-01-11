@@ -96,3 +96,4 @@ let calculation=()=>{
     cartIcon.innerHTML=basket.map((x) => x.item).reduce((x,y)=>x+y,0)
 
 }
+calculation()
