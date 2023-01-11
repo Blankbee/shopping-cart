@@ -29,10 +29,11 @@ let shopItems=[{
     img:"images/jeans1.jpg",
     }]
 
-let basket=[]
+let basket=JSON.parse(localStorage.getItem("data")) || []
 
 let generateShop=()=>{
     return(shop.innerHTML=shopItems.map((x)=>{
+        let search=basket.find((y)=> y.id===x.id) || []
         return `
     <div id=product-id-${x.id} class="item">
         <img width="220" height="240" src="${x.img}" alt="">
@@ -43,7 +44,9 @@ let generateShop=()=>{
                 <h2>€ ${x.price}</h2>
                 <div class="buttons">
                     <i onclick="decrement(${x.id})" class="bi bi-dash-lg"></i>
-                    <div id=${x.id} class="quantity">0</div>
+                    <div id=${x.id} class="quantity">
+                    ${search.item===undefined ? 0 : search.item}
+                    </div>
                     <i onclick="increment(${x.id})" class="bi bi-plus-lg"></i>
                 </div>
             </div>
@@ -66,15 +69,21 @@ let increment=(id)=>{
         search.item++
     }
     update(selectedItem.id)
+    localStorage.setItem("data",JSON.stringify(basket))
 }
 let decrement=(id)=>{
     let selectedItem=id
     let search=basket.find((x)=> x.id === selectedItem.id)
-    if(search.item===0) return;
+    if(search.item===undefined) return
+    else if(search.item===0) return
     else{
         search.item--
     }
     update(selectedItem.id)
+    basket=basket.filter((x) => x.item!==0)
+    localStorage.setItem("data",JSON.stringify(basket))
+
+
 }
 let update=(id)=>{
     let search=basket.find((x)=>x.id===id)
